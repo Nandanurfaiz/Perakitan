@@ -2,24 +2,25 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PC BUILDER PRO: CLASSROOM EDITION</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PC BUILDER PRO: MOBILE READY</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Roboto+Mono:wght@400;500&display=swap');
 
         :root {
             --bg-dark: #050505;
             --bg-panel: #111111;
-            --primary: #00f3ff; /* Cyan Neon */
-            --secondary: #bd00ff; /* Purple Neon */
+            --primary: #00f3ff;
+            --secondary: #bd00ff;
             --success: #00ff9d;
             --danger: #ff0055;
             --text-main: #ffffff;
             --text-dim: #a1a1aa;
             --border: rgba(255, 255, 255, 0.15);
+            --nav-height-mobile: 70px;
         }
 
-        * { box-sizing: border-box; user-select: none; }
+        * { box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
 
         body {
             margin: 0;
@@ -29,43 +30,41 @@
             height: 100vh;
             overflow: hidden;
             display: flex;
+            flex-direction: row; /* Default Desktop */
             background-image: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #000 100%);
         }
 
-        /* --- BRAINSTORM SCREEN (NEW) --- */
+        /* --- BRAINSTORM SCREEN --- */
         #brainstorm-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95); z-index: 9999;
+            background: rgba(0,0,0,0.98); z-index: 9999;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            backdrop-filter: blur(10px); transition: 0.5s;
+            padding: 20px;
         }
         
-        .brainstorm-box {
-            width: 600px; text-align: center;
-        }
+        .brainstorm-box { width: 100%; max-width: 600px; text-align: center; }
 
         .terminal-input {
             background: transparent; border: none; border-bottom: 2px solid var(--primary);
-            color: var(--primary); font-family: 'Roboto Mono'; font-size: 2rem;
+            color: var(--primary); font-family: 'Roboto Mono'; font-size: 1.5rem;
             width: 100%; text-align: center; outline: none; padding: 10px;
-            text-transform: uppercase;
+            text-transform: uppercase; margin-bottom: 20px;
         }
 
         .cloud-container {
-            margin-top: 30px; display: flex; flex-wrap: wrap; justify-content: center; gap: 15px;
-            min-height: 200px; align-content: flex-start;
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;
+            min-height: 150px; align-content: flex-start;
         }
 
         .cloud-tag {
             background: rgba(0, 243, 255, 0.1); border: 1px solid var(--primary);
-            color: var(--primary); padding: 8px 20px; border-radius: 20px;
-            font-size: 1.2rem; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+            color: var(--primary); padding: 5px 15px; border-radius: 20px;
+            font-size: 1rem; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
 
-        /* --- SIDEBAR --- */
+        /* --- SIDEBAR (DESKTOP DEFAULT) --- */
         .sidebar {
             width: 260px;
             background: var(--bg-panel);
@@ -73,177 +72,216 @@
             display: flex;
             flex-direction: column;
             padding: 20px;
-            z-index: 10;
+            z-index: 100;
         }
 
         .logo {
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--primary);
-            text-shadow: 0 0 15px rgba(0, 243, 255, 0.6);
-            margin-bottom: 30px;
-            letter-spacing: 2px;
-            text-align: center;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 20px;
+            font-size: 2rem; font-weight: 800; color: var(--primary);
+            text-shadow: 0 0 15px rgba(0, 243, 255, 0.6); margin-bottom: 30px;
+            text-align: center; border-bottom: 1px solid var(--border); padding-bottom: 20px;
         }
 
         .menu-item {
-            padding: 15px;
-            margin-bottom: 8px;
-            cursor: pointer;
-            border-radius: 4px;
-            color: var(--text-dim);
-            font-weight: 600;
-            transition: 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border: 1px solid transparent;
+            padding: 15px; margin-bottom: 8px; cursor: pointer; border-radius: 4px;
+            color: var(--text-dim); font-weight: 600; transition: 0.3s;
+            display: flex; align-items: center; gap: 12px;
         }
 
         .menu-item:hover, .menu-item.active {
-            background: rgba(0, 243, 255, 0.05);
-            color: var(--primary);
-            border-color: rgba(0, 243, 255, 0.3);
-            box-shadow: 0 0 10px rgba(0, 243, 255, 0.1) inset;
+            background: rgba(0, 243, 255, 0.1); color: var(--primary);
         }
+
+        .menu-icon { font-size: 1.2rem; }
 
         /* --- MAIN AREA --- */
-        .main-area { flex: 1; padding: 40px; overflow-y: auto; position: relative; }
+        .main-area { flex: 1; padding: 30px; overflow-y: auto; position: relative; scroll-behavior: smooth; }
 
-        /* STATS */
+        /* STATS BAR */
         .stats-bar {
-            display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 20px;
-            margin-bottom: 30px; background: #1a1a1a; padding: 15px 25px;
+            display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 15px;
+            margin-bottom: 20px; background: #1a1a1a; padding: 15px;
             border-radius: 8px; border: 1px solid var(--border);
         }
-        .xp-container { width: 100%; height: 8px; background: #333; border-radius: 4px; margin-top: 5px; overflow: hidden; }
+        .xp-container { width: 100%; height: 6px; background: #333; border-radius: 3px; margin-top: 5px; }
         .xp-fill { height: 100%; background: linear-gradient(90deg, var(--secondary), var(--primary)); width: 0%; transition: width 0.5s ease; }
 
-        /* PANELS */
-        .game-panel { display: none; animation: fadeIn 0.4s; }
+        /* CARDS & PANELS */
+        .game-panel { display: none; animation: fadeIn 0.4s; padding-bottom: 50px; }
         .game-panel.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .card {
-            background: rgba(20, 20, 20, 0.9); border: 1px solid var(--border);
-            border-radius: 12px; padding: 30px; margin-bottom: 20px; position: relative;
+            background: rgba(20, 20, 20, 0.95); border: 1px solid var(--border);
+            border-radius: 12px; padding: 20px; margin-bottom: 20px; position: relative;
         }
         .card::after {
-            content: ''; position: absolute; top:0; left:0; width:100%; height:4px;
+            content: ''; position: absolute; top:0; left:0; width:100%; height:3px;
             background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 12px 12px 0 0;
         }
 
-        h2 { margin-top: 0; font-family: 'Roboto Mono'; color: var(--primary); display: flex; justify-content: space-between; }
+        h2 { margin-top: 0; font-family: 'Roboto Mono'; color: var(--primary); font-size: 1.2rem; display: flex; justify-content: space-between; align-items: center;}
         
-        /* BUTTONS */
+        /* UI ELEMENTS */
         .btn {
             background: var(--primary); color: #000; border: none; padding: 12px 20px;
             font-weight: 700; cursor: pointer; border-radius: 4px; text-transform: uppercase;
-            transition: 0.2s; margin-right: 10px; font-family: 'Rajdhani', sans-serif; font-size: 1rem;
+            font-size: 0.9rem; margin-right: 5px; margin-bottom: 5px; width: auto;
         }
-        .btn:hover { background: #fff; box-shadow: 0 0 15px var(--primary); }
         .btn-alt { background: transparent; border: 1px solid var(--text-dim); color: var(--text-dim); }
-        .btn-alt:hover { border-color: var(--primary); color: var(--primary); }
-        
         .btn-next {
             background: var(--success); color: black; width: 100%; padding: 15px;
-            font-size: 1.2rem; margin-top: 20px; border: 2px solid white; animation: pulse 2s infinite;
+            font-size: 1rem; margin-top: 15px; border: 2px solid white; animation: pulse 2s infinite;
         }
-        .btn-next:hover { background: #00b36b; transform: scale(1.02); }
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(0, 255, 157, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(0, 255, 157, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 255, 157, 0); } }
 
-        /* MISSION STYLES */
+        /* MISSION SPECIFICS */
         .sort-item {
-            background: #2a2a2a; padding: 15px; margin-bottom: 8px; border-radius: 6px;
-            cursor: pointer; display: flex; justify-content: space-between; border: 1px solid transparent;
+            background: #2a2a2a; padding: 12px; margin-bottom: 8px; border-radius: 6px;
+            cursor: pointer; display: flex; justify-content: space-between; border: 1px solid transparent; font-size: 0.9rem;
         }
         .sort-item.selected { background: rgba(0, 243, 255, 0.15); border-color: var(--primary); }
-        .order-badge { background: #000; width: 25px; height: 25px; border-radius: 50%; text-align: center; line-height: 25px; font-weight: bold; color: var(--primary); }
+        .order-badge { background: #000; width: 20px; height: 20px; border-radius: 50%; text-align: center; line-height: 20px; font-weight: bold; font-size: 0.8rem; color: var(--primary); }
 
-        .chat-container { background: #000; border: 1px solid #333; height: 250px; overflow-y: auto; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
-        .msg { padding: 10px; border-radius: 6px; margin-bottom: 10px; max-width: 80%; font-size: 0.9rem; }
-        .msg.client { background: #222; border-left: 3px solid var(--secondary); }
-        .msg.you { background: rgba(0, 243, 255, 0.1); margin-left: auto; text-align: right; border-right: 3px solid var(--primary); color: var(--primary); }
+        .chat-container { background: #000; border: 1px solid #333; height: 300px; overflow-y: auto; padding: 10px; border-radius: 6px; margin-bottom: 15px; }
+        .msg { padding: 8px 12px; border-radius: 6px; margin-bottom: 8px; max-width: 85%; font-size: 0.9rem; line-height: 1.4; }
+        .msg.client { background: #222; border-left: 3px solid var(--secondary); align-self: flex-start; }
+        .msg.you { background: rgba(0, 243, 255, 0.15); margin-left: auto; border-right: 3px solid var(--primary); color: #fff; }
         
-        .option-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .option-btn { background: #1a1a1a; color: #fff; border: 1px solid #444; padding: 15px; cursor: pointer; text-align: left; transition: 0.2s; }
-        .option-btn:hover { border-color: var(--primary); background: #222; }
+        .option-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .option-btn { 
+            background: #1a1a1a; color: #fff; border: 1px solid #444; padding: 12px; 
+            cursor: pointer; font-size: 0.9rem; border-radius: 4px;
+        }
+        .option-btn:active { background: #333; }
 
-        .hazard-box { background: #1a1a1a; padding: 20px; border-radius: 8px; border: 1px solid #333; margin-top: 15px; }
-
+        .hazard-box { background: #1a1a1a; padding: 15px; border-radius: 8px; border: 1px solid #333; margin-top: 10px; }
+        
         /* TOAST */
         #toast {
-            position: fixed; top: 20px; right: 20px; background: #000; border: 1px solid var(--success);
-            color: var(--success); padding: 15px 30px; border-radius: 4px; transform: translateX(200%);
-            transition: 0.4s; z-index: 100; font-family: 'Roboto Mono'; box-shadow: 0 0 20px rgba(0, 255, 157, 0.2);
+            position: fixed; top: 20px; left: 50%; transform: translate(-50%, -200%); 
+            background: #000; border: 1px solid var(--success); color: var(--success); 
+            padding: 10px 20px; border-radius: 30px; z-index: 200; font-family: 'Roboto Mono'; 
+            font-size: 0.9rem; white-space: nowrap; transition: 0.3s; box-shadow: 0 5px 20px rgba(0,0,0,0.5);
         }
-        #toast.show { transform: translateX(0); }
-        #toast.error { border-color: var(--danger); color: var(--danger); box-shadow: 0 0 20px rgba(255, 0, 85, 0.2); }
+        #toast.show { transform: translate(-50%, 0); }
+        #toast.error { border-color: var(--danger); color: var(--danger); }
 
+        /* ================= MOBILE RESPONSIVE CSS ================= */
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+
+            /* Bottom Navigation Bar for Mobile */
+            .sidebar {
+                position: fixed; bottom: 0; left: 0; width: 100%; height: var(--nav-height-mobile);
+                flex-direction: row; border-right: none; border-top: 1px solid #333;
+                padding: 0; justify-content: space-around; background: #000;
+                box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
+            }
+
+            .logo { display: none; } /* Hide logo on mobile */
+
+            .menu-item {
+                flex-direction: column; justify-content: center; gap: 4px;
+                font-size: 0.7rem; padding: 10px 5px; margin: 0; flex: 1; text-align: center;
+                border-radius: 0;
+            }
+            
+            .menu-item.active { border-top: 2px solid var(--primary); background: transparent; }
+            .menu-icon { font-size: 1.5rem; margin-bottom: 2px; }
+
+            /* Main Area Adjustments */
+            .main-area { padding: 15px; padding-bottom: 90px; /* Space for bottom nav */ }
+
+            /* Stacking Grids */
+            .stats-bar { grid-template-columns: 1fr; gap: 10px; padding: 12px; }
+            .option-grid { grid-template-columns: 1fr; } /* Buttons stack vertically */
+            
+            /* Text Sizing */
+            h1 { font-size: 1.5rem; }
+            h2 { font-size: 1.1rem; flex-direction: column; align-items: flex-start; gap: 5px; }
+            .brainstorm-box p { font-size: 0.9rem; }
+            .terminal-input { font-size: 1.2rem; }
+
+            /* Button Sizing */
+            .btn { width: 100%; margin-right: 0; margin-bottom: 10px; padding: 15px; }
+            .btn-alt { width: 100%; }
+        }
     </style>
 </head>
 <body>
 
 <div id="brainstorm-screen">
     <div class="brainstorm-box">
-        <h1 style="color:var(--primary); text-shadow:0 0 20px var(--primary);">SYSTEM INITIALIZATION</h1>
-        <p style="color:#aaa;">VERIFYING HARDWARE COMPONENTS...</p>
-        <p style="font-size:0.9rem; margin-bottom:30px;">Instruktur: "Sebutkan komponen komputer satu per satu!"</p>
+        <h1 style="color:var(--primary);">SYSTEM BOOT</h1>
+        <p style="color:#aaa;">VERIFIKASI KOMPONEN HARDWARE</p>
+        <p style="margin-bottom:20px; font-size:0.85rem;">Instruktur: "Sebutkan satu komponen komputer!"</p>
         
-        <input type="text" id="comp-input" class="terminal-input" placeholder="TYPE & ENTER..." autocomplete="off">
+        <input type="text" id="comp-input" class="terminal-input" placeholder="KETIK DISINI..." autocomplete="off">
         
         <div id="cloud-area" class="cloud-container"></div>
 
-        <div style="margin-top:40px;">
-            <p id="comp-counter" style="color:var(--text-dim);">0 COMPONENTS FOUND</p>
-            <button id="btn-boot" class="btn" style="background:#333; color:#555; cursor:not-allowed;" onclick="bootSystem()" disabled>SYSTEM NOT READY</button>
+        <div style="margin-top:30px; width:100%;">
+            <p id="comp-counter" style="color:var(--text-dim); font-size:0.8rem;">0 KOMPONEN DITEMUKAN</p>
+            <button id="btn-boot" class="btn" style="background:#333; color:#555; width:100%;" onclick="bootSystem()" disabled>SYSTEM NOT READY</button>
         </div>
     </div>
 </div>
 
 <div class="sidebar">
-    <div class="logo">PC.BUILDER<br><span style="font-size:1rem; color:#fff;">PRO v3.0</span></div>
-    <div class="menu-item active" onclick="nav('dashboard')">📊 Dashboard</div>
-    <div class="menu-item" onclick="nav('mission1')">🧩 Misi 1: Logika</div>
-    <div class="menu-item" onclick="nav('mission2')">💬 Misi 2: Klien</div>
-    <div class="menu-item" onclick="nav('mission3')">⚠️ Misi 3: Safety</div>
+    <div class="logo">PC.BUILDER</div>
+    <div class="menu-item active" onclick="nav('dashboard')">
+        <div class="menu-icon">📊</div>
+        <div>Home</div>
+    </div>
+    <div class="menu-item" onclick="nav('mission1')">
+        <div class="menu-icon">🧩</div>
+        <div>Logika</div>
+    </div>
+    <div class="menu-item" onclick="nav('mission2')">
+        <div class="menu-icon">💬</div>
+        <div>Klien</div>
+    </div>
+    <div class="menu-item" onclick="nav('mission3')">
+        <div class="menu-icon">⚠️</div>
+        <div>Safety</div>
+    </div>
 </div>
 
 <div class="main-area">
 
     <div class="stats-bar">
-        <div>
-            <div style="color: var(--text-dim); font-size: 0.8rem;">RANK</div>
-            <div id="rank-display" style="font-weight: bold; color: var(--primary);">ROOKIE</div>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="color:var(--text-dim); font-size:0.8rem;">RANK</span>
+            <span id="rank-display" style="font-weight:bold; color:var(--primary);">ROOKIE</span>
         </div>
         <div>
-            <div style="display: flex; justify-content: space-between; font-size: 0.8rem;"><span>XP</span><span id="xp-text">0 / 5000</span></div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.8rem;"><span>XP</span><span id="xp-text">0/5000</span></div>
             <div class="xp-container"><div class="xp-fill" id="xp-bar"></div></div>
         </div>
-        <div style="text-align: right;">
-            <div style="color: var(--text-dim); font-size: 0.8rem;">CREDITS</div>
-            <div id="money-display" style="color: var(--success); font-weight: bold;">Rp 0</div>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="color:var(--text-dim); font-size:0.8rem;">SALDO</span>
+            <span id="money-display" style="color:var(--success); font-weight:bold;">Rp 0</span>
         </div>
     </div>
 
     <div id="dashboard" class="game-panel active">
         <div class="card">
-            <h2>DASHBOARD INSTRUKTUR</h2>
-            <p>Selamat! Fase inisialisasi komponen selesai. Silakan pilih misi untuk memulai pelajaran.</p>
+            <h2>DASHBOARD <span style="font-size:0.8rem; color:#aaa; font-weight:normal;">Instruktur Mode</span></h2>
+            <p style="margin-top:10px;">Fase Booting selesai. Silakan pilih misi di menu bawah (HP) atau samping (Laptop) untuk memulai materi.</p>
         </div>
     </div>
 
     <div id="mission1" class="game-panel">
         <div class="card">
-            <h2>LOGIC SEQUENCE <span style="font-size:0.9rem; color:#aaa;" id="m1-counter">Case 1/10</span></h2>
-            <p id="m1-desc">...</p>
+            <h2>LOGIKA RAKIT <span style="font-size:0.8rem; background:#333; padding:2px 8px; border-radius:4px;" id="m1-counter">#1</span></h2>
+            <p id="m1-desc" style="margin:15px 0; color:#ddd;">...</p>
             <div id="m1-container"></div>
+            
             <div style="margin-top: 20px;" id="m1-controls">
-                <button class="btn" onclick="checkM1()">VERIFIKASI</button>
-                <button class="btn btn-alt" onclick="resetM1()">RESET</button>
+                <button class="btn" onclick="checkM1()">CEK JAWABAN</button>
+                <button class="btn btn-alt" onclick="resetM1()">ULANG</button>
             </div>
+            
             <div id="m1-next-area" style="display:none;">
                 <button class="btn btn-next" onclick="nextCaseM1()">LANJUT SOAL >></button>
             </div>
@@ -252,7 +290,7 @@
 
     <div id="mission2" class="game-panel">
         <div class="card">
-            <h2>CLIENT REQUEST <span style="font-size:0.9rem; color:#aaa;" id="m2-counter">Client 1/10</span></h2>
+            <h2>CHAT KLIEN <span style="font-size:0.8rem; background:#333; padding:2px 8px; border-radius:4px;" id="m2-counter">#1</span></h2>
             <div class="chat-container" id="m2-chat"></div>
             <div class="option-grid" id="m2-options"></div>
             <div id="m2-next-area" style="display:none;">
@@ -263,11 +301,11 @@
 
     <div id="mission3" class="game-panel">
         <div class="card">
-            <h2>SAFETY PROTOCOL <span style="font-size:0.9rem; color:#aaa;" id="m3-counter">Case 1/10</span></h2>
+            <h2>SAFETY CHECK <span style="font-size:0.8rem; background:#333; padding:2px 8px; border-radius:4px;" id="m3-counter">#1</span></h2>
             <div class="hazard-box">
-                <div style="color:var(--danger); font-weight:bold;">BAHAYA:</div>
-                <div class="hazard-q" id="m3-q">...</div>
-                <hr style="border-color:#333;">
+                <div style="color:var(--danger); font-weight:bold; font-size:0.9rem;">SITUASI:</div>
+                <div class="hazard-q" id="m3-q" style="margin:10px 0;">...</div>
+                <hr style="border-color:#333; margin:15px 0;">
                 <div class="option-grid" id="m3-options"></div>
                 <div id="m3-next-area" style="display:none;">
                     <button class="btn btn-next" onclick="nextCaseM3()">LANJUT SOAL >></button>
@@ -280,147 +318,115 @@
 <div id="toast"></div>
 
 <script>
-    // --- COMPONENT DATABASE (VALIDATION) ---
+    // --- DATABASE KOMPONEN ---
     const validComponents = [
-        "cpu", "processor", "prosesor", "otak",
+        "cpu", "processor", "prosesor", "otak", "intel", "amd",
         "ram", "memory", "memori",
-        "motherboard", "mainboard", "mobo", "papan induk",
+        "motherboard", "mainboard", "mobo",
         "vga", "gpu", "card", "kartu grafis",
-        "hdd", "ssd", "harddisk", "hardisk", "storage",
-        "psu", "power supply", "power",
-        "casing", "case", "kotak",
-        "monitor", "layar", "screen",
+        "hdd", "ssd", "harddisk", "hardisk", "penyimpanan",
+        "psu", "power supply", "power", "listrik",
+        "casing", "case", "kotak cpu",
+        "monitor", "layar", "led", "lcd",
         "keyboard", "mouse", "mousepad",
-        "fan", "cooler", "kipas", "heatsink", "pasta", "thermal paste",
-        "kabel", "cable", "hdmi", "vga kabel", "power kabel",
-        "lan", "wifi", "sound card", "speaker", "headset",
-        "flashdisk", "dvd", "cd rom"
+        "fan", "cooler", "kipas", "heatsink", "pasta",
+        "kabel", "cable", "hdmi", "kabel power",
+        "speaker", "headset", "mic", "webcam", "flashdisk"
     ];
-
     let foundComponents = [];
 
     // --- BRAINSTORM LOGIC ---
     const inputField = document.getElementById('comp-input');
-    
     inputField.addEventListener("keypress", function(event) {
-        if (event.key === "Enter") {
-            validateComponent();
-        }
+        if (event.key === "Enter") validateComponent();
     });
 
     function validateComponent() {
         let val = inputField.value.toLowerCase().trim();
         if(val === "") return;
-
         if(foundComponents.includes(val)) {
-            showToast("SUDAH ADA!", true);
-            inputField.value = "";
-            return;
+            showToast("SUDAH ADA!", true); inputField.value = ""; return;
         }
-
         if(validComponents.includes(val)) {
-            // Valid
             foundComponents.push(val);
-            addCloudTag(val.toUpperCase());
+            let tag = document.createElement('div'); tag.className = 'cloud-tag'; tag.innerText = val.toUpperCase();
+            document.getElementById('cloud-area').appendChild(tag);
             inputField.value = "";
-            updateBootStatus();
-            showToast("ACCEPTED: " + val.toUpperCase());
+            
+            document.getElementById('comp-counter').innerText = foundComponents.length + " DITEMUKAN";
+            if(foundComponents.length >= 2) { // Cukup 2 untuk demo mobile
+                const btn = document.getElementById('btn-boot');
+                btn.disabled = false; btn.innerText = "BOOT SYSTEM >>"; 
+                btn.style.background = "var(--primary)"; btn.style.color = "black";
+            }
+            showToast("DITERIMA: " + val.toUpperCase());
         } else {
-            // Invalid
-            showToast("UNKNOWN COMPONENT!", true);
-            inputField.classList.add('shake'); // Add shake animation class if you want
-            setTimeout(() => inputField.classList.remove('shake'), 500);
+            showToast("TIDAK DIKENALI!", true);
         }
     }
-
-    function addCloudTag(text) {
-        const tag = document.createElement('div');
-        tag.className = 'cloud-tag';
-        tag.innerText = text;
-        document.getElementById('cloud-area').appendChild(tag);
-    }
-
-    function updateBootStatus() {
-        const count = foundComponents.length;
-        document.getElementById('comp-counter').innerText = count + " COMPONENTS FOUND";
-        
-        const btn = document.getElementById('btn-boot');
-        if(count >= 3) { // Minimum 3 components to start
-            btn.disabled = false;
-            btn.style.background = "var(--primary)";
-            btn.style.color = "black";
-            btn.style.cursor = "pointer";
-            btn.innerText = "BOOT SYSTEM NOW >>";
-            btn.style.boxShadow = "0 0 20px var(--primary)";
-        }
-    }
-
     function bootSystem() {
-        const screen = document.getElementById('brainstorm-screen');
-        screen.style.opacity = 0;
-        setTimeout(() => {
-            screen.style.display = 'none';
-        }, 500);
+        document.getElementById('brainstorm-screen').style.display = 'none';
     }
 
-    // --- CORE GAME LOGIC (SAMA SEPERTI SEBELUMNYA) ---
-    let xp = 0;
-    let money = 0;
-    let rank = "ROOKIE";
+    // --- GAME ENGINE ---
+    let xp = 0, money = 0;
     let p1=0, p2=0, p3=0;
 
-    // DATA MISI 1
+    // DATA SOAL (Contoh sebagian, bisa ditambah)
     const db_m1 = [
-        { title: "Instalasi Processor Intel", steps: ["Buka tuas soket", "Cocokkan takik (notch)", "Letakkan CPU pelan-pelan", "Kunci tuas soket"] },
-        { title: "Instalasi RAM Dual Channel", steps: ["Buka kunci slot RAM", "Cek posisi lubang pin", "Tekan hingga bunyi 'Klik'", "Kunci kembali (jika manual)"] },
-        { title: "Pasang Front Panel", steps: ["Cari pin F_PANEL", "Pasang Power Switch", "Pasang Reset Switch", "Pasang HDD LED"] },
-        { title: "Alur Troubleshooting No Display", steps: ["Cek kabel monitor", "Cek listrik PC", "Cek RAM (bersihkan)", "Cek VGA Card"] },
-        { title: "Urutan Booting PC", steps: ["Tekan Tombol Power", "Listrik masuk PSU", "POST (Power On Self Test)", "Masuk Windows"] },
+        { title: "Pasang Processor", steps: ["Buka Tuas", "Pasang CPU", "Kunci Tuas"] },
+        { title: "Pasang RAM", steps: ["Buka Kunci Slot", "Cek Lubang", "Tekan RAM"] },
+        { title: "Pasang Kabel Front", steps: ["Cari Pin", "Pasang Power SW", "Pasang LED"] },
+        { title: "PC Tidak Tampil", steps: ["Cek Listrik", "Cek Kabel Monitor", "Cek RAM"] },
+        { title: "Urutan Booting", steps: ["Tekan Power", "Masuk BIOS", "Masuk Windows"] }
     ];
-    // DATA MISI 2
     const db_m2 = [
-        { client: "Butuh PC Admin murah & awet.", opts: [{txt:"i9 & RTX 4090", c:false, r:"Mahal!"}, {txt:"i3, SSD, PSU 80+", c:true, r:"Deal!"}] },
-        { client: "PC Gaming & Streaming.", opts: [{txt:"i7 & VGA High End", c:true, r:"Mantap!"}, {txt:"RAM 4GB Hemat", c:false, r:"Lag dong!"}] },
-        { client: "PC Sekolah Anak.", opts: [{txt:"PC Bekas + Webcam", c:true, r:"Cukup."}, {txt:"Liquid Cooling", c:false, r:"Berlebihan."}] },
+        { client: "PC Admin Murah.", opts: [{txt:"i9 Mahal", c:false, r:"Gak punya duit!"}, {txt:"i3 Hemat", c:true, r:"Deal!"}] },
+        { client: "PC Gaming Stream.", opts: [{txt:"Spek Tinggi", c:true, r:"Siap!"}, {txt:"RAM 2GB", c:false, r:"Lag parah!"}] },
+        { client: "PC Sekolah.", opts: [{txt:"PC Bekas", c:true, r:"Cukup."}, {txt:"Water Cooling", c:false, r:"Lebay."}] }
     ];
-    // DATA MISI 3
     const db_m3 = [
-        { q: "Tangan berkeringat saat pegang Mobo.", opts: ["Lap kering", "Sarung wol"], ans: 0 },
-        { q: "Baut jatuh ke sela motherboard.", opts: ["Biarkan", "Ambil magnet"], ans: 1 },
-        { q: "Kabel listrik terkelupas.", opts: ["Ganti baru", "Lakban aja"], ans: 0 },
+        { q: "Tangan basah pegang CPU.", opts: ["Lap Dulu", "Gapapa"], ans: 0 },
+        { q: "Baut jatuh ke Mobo.", opts: ["Biarin", "Ambil"], ans: 1 },
+        { q: "Kabel lecet.", opts: ["Ganti", "Lakban"], ans: 0 }
     ];
 
     function nav(id) {
         document.querySelectorAll('.game-panel').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
         
-        if(id === 'mission1') loadM1();
-        if(id === 'mission2') loadM2();
-        if(id === 'mission3') loadM3();
+        document.getElementById(id).classList.add('active');
+        // Set active menu visual
+        const ids = ['dashboard','mission1','mission2','mission3'];
+        const idx = ids.indexOf(id);
+        if(idx !== -1) document.querySelectorAll('.menu-item')[idx].classList.add('active');
+        
+        // Init Load
+        if(id==='mission1') loadM1();
+        if(id==='mission2') loadM2();
+        if(id==='mission3') loadM3();
     }
 
     function addReward(x, m) {
         xp += x; money += m;
-        document.getElementById('money-display').innerText = "Rp " + money.toLocaleString();
-        document.getElementById('xp-text').innerText = xp + " / 5000";
+        document.getElementById('money-display').innerText = "Rp " + (money/1000) + "k";
+        document.getElementById('xp-text').innerText = xp;
         document.getElementById('xp-bar').style.width = (xp/5000*100) + "%";
-        showToast(`+${x} XP | +Rp ${m/1000}k`);
+        showToast(`+${x} XP`);
     }
 
-    function showToast(msg, isError = false) {
+    function showToast(msg, isError=false) {
         const t = document.getElementById('toast');
-        t.innerText = msg;
-        t.className = isError ? 'error show' : 'show';
+        t.innerText = msg; t.className = isError ? 'error show' : 'show';
         setTimeout(() => t.className = '', 2000);
     }
 
-    // --- MISSION 1 LOGIC ---
+    // LOGIC MISI 1
     let userOrder = [];
     function loadM1() {
-        if(p1 >= db_m1.length) { document.getElementById('m1-container').innerHTML = "<h3>SELESAI</h3>"; return; }
+        if(p1 >= db_m1.length) { document.getElementById('m1-container').innerHTML = "SELESAI"; return; }
         const d = db_m1[p1];
-        document.getElementById('m1-counter').innerText = `Case ${p1+1}`;
+        document.getElementById('m1-counter').innerText = `#${p1+1}`;
         document.getElementById('m1-desc').innerText = d.title;
         document.getElementById('m1-controls').style.display = 'block';
         document.getElementById('m1-next-area').style.display = 'none';
@@ -441,44 +447,48 @@
     }
     function checkM1() {
         if(JSON.stringify(userOrder) === JSON.stringify(db_m1[p1].steps)) {
-            addReward(150, 50000);
+            addReward(100, 50000);
             document.getElementById('m1-controls').style.display = 'none';
             document.getElementById('m1-next-area').style.display = 'block';
-        } else { showToast("SALAH!", true); setTimeout(loadM1, 1000); }
+        } else { showToast("SALAH URUTAN!", true); setTimeout(loadM1, 800); }
     }
     function resetM1() { loadM1(); }
     function nextCaseM1() { p1++; loadM1(); }
 
-    // --- MISSION 2 LOGIC ---
+    // LOGIC MISI 2
     function loadM2() {
         if(p2 >= db_m2.length) { document.getElementById('m2-chat').innerHTML = "SELESAI"; return; }
         const d = db_m2[p2];
-        document.getElementById('m2-counter').innerText = `Client ${p2+1}`;
+        document.getElementById('m2-counter').innerText = `#${p2+1}`;
         document.getElementById('m2-chat').innerHTML = `<div class="msg client">${d.client}</div>`;
         document.getElementById('m2-options').style.display = 'grid';
         document.getElementById('m2-next-area').style.display = 'none';
-    
+        
         const o = document.getElementById('m2-options'); o.innerHTML = '';
         d.opts.forEach(opt => {
             let b = document.createElement('div'); b.className = 'option-btn'; b.innerText = opt.txt;
             b.onclick = () => {
-                document.getElementById('m2-chat').innerHTML += `<div class="msg you">${opt.txt}</div><div class="msg client">${opt.r}</div>`;
-                if(opt.c) {
-                    addReward(200, 75000);
-                    document.getElementById('m2-options').style.display = 'none';
-                    document.getElementById('m2-next-area').style.display = 'block';
-                } else { showToast("KECEWA!", true); setTimeout(loadM2, 1000); }
+                document.getElementById('m2-chat').innerHTML += `<div class="msg you">${opt.txt}</div>`;
+                setTimeout(() => {
+                    document.getElementById('m2-chat').innerHTML += `<div class="msg client">${opt.r}</div>`;
+                    document.getElementById('m2-chat').scrollTop = document.getElementById('m2-chat').scrollHeight;
+                    if(opt.c) {
+                        addReward(150, 75000);
+                        document.getElementById('m2-options').style.display = 'none';
+                        document.getElementById('m2-next-area').style.display = 'block';
+                    } else { showToast("KLIEN KECEWA!", true); setTimeout(loadM2, 1000); }
+                }, 500);
             };
             o.appendChild(b);
         });
     }
     function nextCaseM2() { p2++; loadM2(); }
 
-    // --- MISSION 3 LOGIC ---
+    // LOGIC MISI 3
     function loadM3() {
         if(p3 >= db_m3.length) { document.getElementById('m3-q').innerText = "SELESAI"; return; }
         const d = db_m3[p3];
-        document.getElementById('m3-counter').innerText = `Case ${p3+1}`;
+        document.getElementById('m3-counter').innerText = `#${p3+1}`;
         document.getElementById('m3-q').innerText = d.q;
         document.getElementById('m3-options').style.display = 'grid';
         document.getElementById('m3-next-area').style.display = 'none';
@@ -491,7 +501,7 @@
                     addReward(100, 25000);
                     document.getElementById('m3-options').style.display = 'none';
                     document.getElementById('m3-next-area').style.display = 'block';
-                } else { showToast("BAHAYA!", true); }
+                } else { showToast("BERBAHAYA!", true); }
             };
             o.appendChild(b);
         });

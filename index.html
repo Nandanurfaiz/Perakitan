@@ -457,7 +457,7 @@
         document.getElementById('m2-chat').innerHTML = `<div class="msg client">${d.client}</div>`;
         document.getElementById('m2-options').style.display = 'grid';
         document.getElementById('m2-next-area').style.display = 'none';
-        
+    
         const o = document.getElementById('m2-options'); o.innerHTML = '';
         d.opts.forEach(opt => {
             let b = document.createElement('div'); b.className = 'option-btn'; b.innerText = opt.txt;
